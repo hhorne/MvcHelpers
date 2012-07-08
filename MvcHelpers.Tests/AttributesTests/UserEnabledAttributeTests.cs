@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
+using AutoMapper;
 using MvcHelpers.Controllers;
 using MvcHelpers.Services;
 using Moq;
@@ -10,13 +11,23 @@ namespace MvcHelpers.Tests.AttributesTests
 {
 	public class UserEnabledAttributeTests
 	{
-		private readonly Mock<Controller> _BaseController = new Mock<Controller>();
+		Mock<Controller> _BaseController = new Mock<Controller>();
 
-		private readonly Mock<FakeFullyEnabledController<FakeUser>> _FullyEnabledController =
-			new Mock<FakeFullyEnabledController<FakeUser>>();
+		Mock<FakeFullyEnabledController<FakeUser>> _FullyEnabledController = new Mock<FakeFullyEnabledController<FakeUser>>();
 
-		private readonly Mock<FakeUserAwareController<FakeUser>> _UserAwareController =
-			new Mock<FakeUserAwareController<FakeUser>>();
+		Mock<FakeUserAwareController<FakeUser>> _UserAwareController = new Mock<FakeUserAwareController<FakeUser>>();
+
+        [Fact]
+        public void Should_Create_Model_Mapping_When_Not_Present()
+        {   
+            Mapper.Reset();
+            bool typeMapWasNull = Mapper.FindTypeMapFor<FakeUser, FakeUserDetails>() == null;
+            var attribute = new UserEnabledAttribute(typeof(FakeUser), typeof(FakeUserDetails));
+
+            Assert.True(typeMapWasNull);
+            Mapper.AssertConfigurationIsValid();
+            Assert.NotNull(Mapper.FindTypeMapFor<FakeUser, FakeUserDetails>());
+        }
 
 		[Fact]
 		public void Should_Throw_Exception_When_Calling_Controller_Doesnt_Implement_IUserAware()
@@ -96,7 +107,7 @@ namespace MvcHelpers.Tests.AttributesTests
 			attribute.OnResultExecuting(filterContext);
 
             Assert.NotNull(filterContext.Controller.ViewBag.UserDetails);
-            Assert.Equal("Test", filterContext.Controller.ViewBag.UserDetails.Name); ;
+            Assert.Equal("Test", filterContext.Controller.ViewBag.UserDetails.Name);
 		}
 	}
 
