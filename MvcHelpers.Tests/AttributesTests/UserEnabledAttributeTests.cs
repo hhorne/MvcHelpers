@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Web.Mvc;
 using MvcHelpers.Controllers;
 using MvcHelpers.Services;
-using NUnit.Framework;
 using Moq;
 using MvcHelpers.Attributes;
+using Xunit;
 
-namespace MvcHelpers.AttributesTests
+namespace MvcHelpers.Tests.AttributesTests
 {
-	[TestFixture]
 	public class UserEnabledAttributeTests
 	{
 		private readonly Mock<Controller> _BaseController = new Mock<Controller>();
@@ -20,42 +18,43 @@ namespace MvcHelpers.AttributesTests
 		private readonly Mock<FakeUserAwareController<FakeUser>> _UserAwareController =
 			new Mock<FakeUserAwareController<FakeUser>>();
 
-		[Test]
+		[Fact]
 		public void Should_Throw_Exception_When_Calling_Controller_Doesnt_Implement_IUserAware()
 		{
-			var filterContext = new ResultExecutingContext();
-			filterContext.Controller = _BaseController.Object;
+		    var exceptionMessage = "Calling Controller must implement IUserAwareController";
+            var filterContext = new ResultExecutingContext { Controller = _BaseController.Object };
 			var attribute = new UserEnabledAttribute(typeof (FakeUser), typeof (FakeUserDetails));
 
-			Assert.Throws<Exception>(() => attribute.OnResultExecuting(filterContext),
-			                         "Calling Controller must implement IUserAwareController");
+			var exception = Assert.Throws<Exception>(() => attribute.OnResultExecuting(filterContext));
+            Assert.Equal(exceptionMessage, exception.Message);
 		}
 
-		[Test]
+		[Fact]
 		public void Should_Throw_Exception_When_UserModel_Differs_From_IUserAwareControllers_Type_Argument()
 		{
-			var filterContext = new ResultExecutingContext();
+            var exceptionMessage = "The User model type specified by the Controller and Attribute are not the same. And they should be.";
+            var filterContext = new ResultExecutingContext();
 			filterContext.Controller = new FakeUserAwareController<string>();
 			var attribute = new UserEnabledAttribute(typeof (FakeUser), typeof (FakeUserDetails));
 
-			Assert.Throws<Exception>(() => attribute.OnResultExecuting(filterContext),
-			                         "The User model type specified by the Controller and Attribute are not the same. And they should be.");
+            var exception = Assert.Throws<Exception>(() => attribute.OnResultExecuting(filterContext));
+            Assert.Equal(exceptionMessage, exception.Message);
+
 		}
 
-		[Test]
+		[Fact]
 		public void Should_Do_Nothing_When_CurrentUser_Is_Null()
 		{
-			var filterContext = new ResultExecutingContext();
-			filterContext.Controller = _UserAwareController.Object;
-			var attribute = new UserEnabledAttribute(typeof (FakeUser), typeof (FakeUserDetails));
+			var filterContext = new ResultExecutingContext { Controller = _UserAwareController.Object };
+		    var attribute = new UserEnabledAttribute(typeof (FakeUser), typeof (FakeUserDetails));
 
 			attribute.OnResultExecuting(filterContext);
 			var details = filterContext.Controller.ViewBag.UserDetails;
 
-			Assert.IsNull(details);
+			Assert.Null(details);
 		}
 
-		[Test]
+		[Fact]
 		public void Should_Set_ViewBag_Contents_When_Not_Implementing_ICachingController()
 		{
 			var filterContext = new ResultExecutingContext();
@@ -70,11 +69,11 @@ namespace MvcHelpers.AttributesTests
 
 			attribute.OnResultExecuting(filterContext);
 
-			Assert.That(filterContext.Controller.ViewBag.UserDetails, Is.Not.Null);
-			Assert.That(filterContext.Controller.ViewBag.UserDetails.Name, Is.EqualTo("Test"));
+            Assert.NotNull(filterContext.Controller.ViewBag.UserDetails);
+            Assert.Equal("Test", filterContext.Controller.ViewBag.UserDetails.Name);
 		}
 
-		[Test]
+		[Fact]
 		public void Should_Set_ViewBag_Contents_When_Implementing_ICachingController()
 		{
 			var filterContext = new ResultExecutingContext();
@@ -96,8 +95,8 @@ namespace MvcHelpers.AttributesTests
 
 			attribute.OnResultExecuting(filterContext);
 
-			Assert.That(filterContext.Controller.ViewBag.UserDetails, Is.Not.Null);
-			Assert.That(filterContext.Controller.ViewBag.UserDetails.Name, Is.EqualTo("Test"));
+            Assert.NotNull(filterContext.Controller.ViewBag.UserDetails);
+            Assert.Equal("Test", filterContext.Controller.ViewBag.UserDetails.Name); ;
 		}
 	}
 
