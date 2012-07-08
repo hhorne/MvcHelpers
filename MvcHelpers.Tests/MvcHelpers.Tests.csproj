@@ -54,6 +54,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fakes\FakeUser.cs" />
+    <Compile Include="Fakes\FakeUserDetails.cs" />
+    <Compile Include="Fakes\FakeUserAwareController.cs" />
+    <Compile Include="Fakes\FakeFullyEnabledController.cs" />
     <Compile Include="AttributesTests\UserEnabledAttributeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServicesTests\Sha256CryptoServiceTests.cs" />
