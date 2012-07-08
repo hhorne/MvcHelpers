@@ -44,7 +44,7 @@ namespace MvcHelpers.Tests.ServicesTests
 		}
 
 		[Fact]
-		public void Should_Throw_Exception_When_correctHash_Is_Too_Short()
+		public void Should_Throw_Exception_When_Correct_Hash_Is_Too_Short()
 		{			
 			string shortHash = _CryptoService.HashPassword(password);
 			shortHash = shortHash.Substring(0, shortHash.Length - 1);
