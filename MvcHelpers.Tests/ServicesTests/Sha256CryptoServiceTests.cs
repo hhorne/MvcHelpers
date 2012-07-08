@@ -6,9 +6,14 @@ namespace MvcHelpers.Tests.ServicesTests
 {
 	public class Sha256CryptoServiceTests
 	{
-		private Sha256CryptoService _CryptoService = new Sha256CryptoService();
 		string password = "Correct Password 123";
-		private string badPassword = "Bad Password :(";
+		string badPassword = "Bad Password :(";
+        Sha256CryptoService _CryptoService;
+
+        public Sha256CryptoServiceTests()
+        {
+            _CryptoService = new Sha256CryptoService();
+        }
 
 		[Fact]
 		public void Should_Make_Hashed_Password_128_Characters_Or_Greater()
