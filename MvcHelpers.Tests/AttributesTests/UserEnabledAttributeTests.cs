@@ -1,32 +1,29 @@
 ﻿using System;
 using System.Web.Mvc;
 using AutoMapper;
-using MvcHelpers.Controllers;
 using MvcHelpers.Services;
 using Moq;
 using MvcHelpers.Attributes;
+using MvcHelpers.Tests.Fakes;
 using Xunit;
 
 namespace MvcHelpers.Tests.AttributesTests
 {
 	public class UserEnabledAttributeTests
 	{
+        Mock<IMappingExpression> _MappingExpression = new Mock<IMappingExpression>();
+        Mock<ITypeMapService> _TypeService = new Mock<ITypeMapService>();
 		Mock<Controller> _BaseController = new Mock<Controller>();
-
 		Mock<FakeFullyEnabledController<FakeUser>> _FullyEnabledController = new Mock<FakeFullyEnabledController<FakeUser>>();
-
 		Mock<FakeUserAwareController<FakeUser>> _UserAwareController = new Mock<FakeUserAwareController<FakeUser>>();
 
         [Fact]
         public void Should_Create_Model_Mapping_When_Not_Present()
         {   
-            Mapper.Reset();
-            bool typeMapWasNull = Mapper.FindTypeMapFor<FakeUser, FakeUserDetails>() == null;
-            var attribute = new UserEnabledAttribute(typeof(FakeUser), typeof(FakeUserDetails));
+            _TypeService.Setup(t => t.TypeMapExists(It.IsAny<Type>(), It.IsAny<Type>())).Returns(null);
+            _TypeService.Setup(t => t.CreateMap(It.IsAny<Type>(), It.IsAny<Type>())).Returns(_MappingExpression.Object);
 
-            Assert.True(typeMapWasNull);
-            Mapper.AssertConfigurationIsValid();
-            Assert.NotNull(Mapper.FindTypeMapFor<FakeUser, FakeUserDetails>());
+            Assert.DoesNotThrow(() => new UserEnabledAttribute(typeof(FakeUser), typeof(FakeUserDetails), _TypeService.Object));            
         }
 
 		[Fact]
@@ -34,7 +31,7 @@ namespace MvcHelpers.Tests.AttributesTests
 		{
 		    var exceptionMessage = "Calling Controller must implement IUserAwareController";
             var filterContext = new ResultExecutingContext { Controller = _BaseController.Object };
-			var attribute = new UserEnabledAttribute(typeof (FakeUser), typeof (FakeUserDetails));
+			var attribute = new UserEnabledAttribute(typeof (FakeUser), typeof (FakeUserDetails), _TypeService.Object);
 
 			var exception = Assert.Throws<Exception>(() => attribute.OnResultExecuting(filterContext));
             Assert.Equal(exceptionMessage, exception.Message);
@@ -46,7 +43,7 @@ namespace MvcHelpers.Tests.AttributesTests
             var exceptionMessage = "The User model type specified by the Controller and Attribute are not the same. And they should be.";
             var filterContext = new ResultExecutingContext();
 			filterContext.Controller = new FakeUserAwareController<string>();
-			var attribute = new UserEnabledAttribute(typeof (FakeUser), typeof (FakeUserDetails));
+            var attribute = new UserEnabledAttribute(typeof(FakeUser), typeof(FakeUserDetails), _TypeService.Object);
 
             var exception = Assert.Throws<Exception>(() => attribute.OnResultExecuting(filterContext));
             Assert.Equal(exceptionMessage, exception.Message);
@@ -57,7 +54,7 @@ namespace MvcHelpers.Tests.AttributesTests
 		public void Should_Do_Nothing_When_CurrentUser_Is_Null()
 		{
 			var filterContext = new ResultExecutingContext { Controller = _UserAwareController.Object };
-		    var attribute = new UserEnabledAttribute(typeof (FakeUser), typeof (FakeUserDetails));
+            var attribute = new UserEnabledAttribute(typeof(FakeUser), typeof(FakeUserDetails), _TypeService.Object);
 
 			attribute.OnResultExecuting(filterContext);
 			var details = filterContext.Controller.ViewBag.UserDetails;
@@ -76,8 +73,9 @@ namespace MvcHelpers.Tests.AttributesTests
 						Name = "Test",
 						RegistrationDate = DateTime.UtcNow
 					});
-			var attribute = new UserEnabledAttribute(typeof (FakeUser), typeof (FakeUserDetails));
+            _TypeService.Setup(t => t.Map(It.IsAny<object>(), It.IsAny<Type>(), It.IsAny<Type>())).Returns(new { Name = "Test" });
 
+            var attribute = new UserEnabledAttribute(typeof(FakeUser), typeof(FakeUserDetails), _TypeService.Object);
 			attribute.OnResultExecuting(filterContext);
 
             Assert.NotNull(filterContext.Controller.ViewBag.UserDetails);
@@ -102,36 +100,12 @@ namespace MvcHelpers.Tests.AttributesTests
 						Name = "Test",
 						RegistrationDate = DateTime.MinValue
 					});
-			var attribute = new UserEnabledAttribute(typeof (FakeUser), typeof (FakeUserDetails));
+			var attribute = new UserEnabledAttribute(typeof (FakeUser), typeof (FakeUserDetails), _TypeService.Object);
 
 			attribute.OnResultExecuting(filterContext);
 
             Assert.NotNull(filterContext.Controller.ViewBag.UserDetails);
             Assert.Equal("Test", filterContext.Controller.ViewBag.UserDetails.Name);
 		}
-	}
-
-	public class FakeUser
-	{
-		public string Name { get; set; }
-		public DateTime RegistrationDate { get; set; }
-	}
-
-	public class FakeUserDetails
-	{
-		public string Name { get; set; }
-		public DateTime RegistrationDate { get; set; }
-	}
-
-	public class FakeUserAwareController<T> : Controller, IUserAwareController<T> where T : class
-	{
-		public virtual T CurrentUser { get; set; } // Marking this property virtual so it can be overridden by Moq
-	}
-
-	public class FakeFullyEnabledController<T> : Controller, ICachingController, IUserAwareController<T> where T : class
-	{
-		public virtual T CurrentUser { get; set; }
-		public virtual IApplicationCacheService ApplicationCache { get; set; }
-		public virtual ISessionCacheService UserSession { get; set; }
 	}
 }
