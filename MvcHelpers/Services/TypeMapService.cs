@@ -9,14 +9,29 @@ namespace MvcHelpers.Services
 {
     public class TypeMapService : ITypeMapService
     {
-        public void CreateMap(Type source, Type dest)
+        public void AssertConfigurationIsValid()
         {
-            Mapper.CreateMap(source, dest);
+            Mapper.AssertConfigurationIsValid();
         }
 
-        public void CreateMap<TSource, TDest>()
+        public IMappingExpression CreateMap(Type source, Type dest)
         {
-            Mapper.CreateMap<TSource, TDest>();
+            return Mapper.CreateMap(source, dest);
+        }
+
+        public IMappingExpression<TSource, TDest> CreateMap<TSource, TDest>()
+        {
+            return Mapper.CreateMap<TSource, TDest>();
+        }
+
+        public object Map(object model, Type source, Type dest)
+        {
+            return Mapper.Map(model, source, dest);
+        }
+
+        public void Reset()
+        {
+            Mapper.Reset();
         }
 
         public bool TypeMapExists(Type source, Type dest)
@@ -28,19 +43,16 @@ namespace MvcHelpers.Services
         {
             return Mapper.FindTypeMapFor<TSource, TDest>() != null;
         }
-
-        public void Reset()
-        {
-            Mapper.Reset();
-        }
     }
 
     public interface ITypeMapService
     {
-        void CreateMap(Type source, Type dest);
-        void CreateMap<TSource, TDest>();
+        void AssertConfigurationIsValid();
+        IMappingExpression CreateMap(Type source, Type dest);
+        IMappingExpression<TSource, TDest> CreateMap<TSource, TDest>();
+        object Map(object model, Type source, Type dest);
+        void Reset();
         bool TypeMapExists(Type source, Type dest);
         bool TypeMapExists<TSource, TDest>();
-        void Reset();
     }
 }

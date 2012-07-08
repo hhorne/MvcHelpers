@@ -4,23 +4,26 @@ using System.Reflection;
 using System.Web.Mvc;
 using AutoMapper;
 using MvcHelpers.Controllers;
+using MvcHelpers.Services;
 
 namespace MvcHelpers.Attributes
 {
 	public class UserEnabledAttribute : ActionFilterAttribute
 	{
-		private readonly Type _UserModel;
+	    private readonly ITypeMapService _TypeMapService;
+	    private readonly Type _UserModel;
 		private readonly Type _UserDetails;
-
-		public UserEnabledAttribute(Type userModel, Type userDetails)
+        
+		public UserEnabledAttribute(Type userModel, Type userDetails, ITypeMapService typeService)
 		{
-			if(Mapper.FindTypeMapFor(userModel, userDetails) == null)
-			{
-				Mapper.CreateMap(userModel, userDetails);
-			}
-
-			_UserModel = userModel;
+		    _TypeMapService = typeService;
+		    _UserModel = userModel;
 			_UserDetails = userDetails;
+
+            if (_TypeMapService.TypeMapExists(_UserModel, _UserDetails) == false)
+            {
+                _TypeMapService.CreateMap(userModel, userDetails);
+            }
 		}
 
 		public override void OnResultExecuting(ResultExecutingContext filterContext)
@@ -41,21 +44,25 @@ namespace MvcHelpers.Attributes
 			dynamic userController = controller;
 			
 			if (userController.CurrentUser != null)
-			{
-				Func<dynamic> getUserDetails = () => Mapper.Map(userController.CurrentUser, _UserModel, _UserDetails);
+			{				
 				var cachingController = controller as ICachingController;
 			
 				if (cachingController == null) // If caching services aren't available, just make the request/conversion each time.
 				{
-					controller.ViewBag.UserDetails = getUserDetails();
+                    controller.ViewBag.UserDetails = GetUserDetails(userController.CurrentUser);
 				}
 				else
 				{
-					controller.ViewBag.UserDetails = cachingController.UserSession.Get("UserBadge", getUserDetails);
+                    controller.ViewBag.UserDetails = cachingController.UserSession.Get("UserBadge", () => GetUserDetails(userController.CurrentUser));
 				}
 			}
 
 			base.OnResultExecuting(filterContext);
 		}
+
+        private dynamic GetUserDetails<T>(T user)
+        {
+            return _TypeMapService.Map(user, _UserModel, _UserDetails);
+        }
 	}
 }
