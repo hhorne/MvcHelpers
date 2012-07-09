@@ -80,4 +80,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+    <UsingTask AssemblyFile="xunit.runner.msbuild.dll" TaskName="Xunit.Runner.MSBuild.xunit" />
+
+  <Target Name="Test">
+    <xunit Assembly="MyTests\bin\Debug\MyTests.dll" />
+  </Target>
+
 </Project>
