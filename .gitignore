@@ -122,6 +122,11 @@ UpgradeLog*.XML
 *.ncrunchproject
 
 ############
+## TeamCity
+############
+_TeamCity*
+
+############
 ## Windows
 ############
 
