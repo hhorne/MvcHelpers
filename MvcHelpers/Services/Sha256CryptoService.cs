@@ -10,7 +10,7 @@ namespace MvcHelpers.Services
 		bool ValidatePassword(string password, string correctHash);
 	}
 
-	public class Sha256CryptoService : ICryptoService
+	public class Sha256CryptoService : ICryptoService, IDisposable
 	{
 		private readonly SHA256 _HashProvider;
 		private readonly RNGCryptoServiceProvider _SaltGenerator;
@@ -18,7 +18,7 @@ namespace MvcHelpers.Services
 		public Sha256CryptoService()
 		{
 			_HashProvider = new SHA256Managed();
-			_SaltGenerator = new RNGCryptoServiceProvider();
+			_SaltGenerator = new RNGCryptoServiceProvider();            
 		}
 		
 		/// <summary>
@@ -76,5 +76,20 @@ namespace MvcHelpers.Services
 			}
 			return buffer.ToString();
 		}
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+	    protected virtual void Dispose(bool disposing)
+	    {
+            if (disposing)
+            {
+                _HashProvider.Dispose();
+                _SaltGenerator.Dispose();
+            }
+	    }
 	}
 }

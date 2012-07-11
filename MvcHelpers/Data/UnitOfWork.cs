@@ -9,7 +9,7 @@ using System.Text;
 
 namespace MvcHelpers.Data
 {
-	public class UnitOfWork<C> : IUnitOfWork where C : DbContext, new()
+    public class UnitOfWork<C> : IUnitOfWork where C : DbContext, IDisposable, new()
 	{
 		private C _Context = new C();
 
@@ -56,8 +56,17 @@ namespace MvcHelpers.Data
 
 		public void Dispose()
 		{
-			_Context.Dispose();
+			Dispose(true);
+            GC.SuppressFinalize(this);
 		}
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing)
+            {
+                _Context.Dispose();
+            }
+        }
 
 		#region
 		//private bool _Disposed = false;
