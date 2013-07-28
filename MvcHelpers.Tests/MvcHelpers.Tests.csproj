@@ -56,6 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fakes\FakeFormsAuthenticationService.cs" />
     <Compile Include="Fakes\FakeUser.cs" />
     <Compile Include="Fakes\FakeUserDetails.cs" />
     <Compile Include="Fakes\FakeUserAwareController.cs" />

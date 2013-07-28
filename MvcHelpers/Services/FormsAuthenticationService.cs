@@ -14,8 +14,7 @@ namespace MvcHelpers.Services
 	}
 
 	// Wrapper around static ASP.NET classes making them usable in MVC controllers 
-	// while not making them difficult to test. A "Fake" implementation is included 
-	// below for use in Unit Testing controllers that consume this service.
+	// while not making them difficult to test. 
     public class FormsAuthenticationService : IFormsAuthenticationService
     {
 		public void SignIn(string email, bool createCookie)
@@ -29,11 +28,4 @@ namespace MvcHelpers.Services
             FormsAuthentication.SignOut();
         }
     }
-
-    // For Testing
-	public class FormsAuthenticationFake : IFormsAuthenticationService
-	{
-		public void SignIn(string userName, bool createCookie) { }
-		public void SignOut() { }
-	}
 }
