@@ -10,20 +10,15 @@ namespace MvcHelpers.Attributes
 {
 	public class UserEnabledAttribute : ActionFilterAttribute
 	{
-	    private readonly ITypeMapService _TypeMapService;
 	    private readonly Type _UserModel;
 		private readonly Type _UserDetails;
-        
-		public UserEnabledAttribute(Type userModel, Type userDetails, ITypeMapService typeService)
+		private readonly IMappingEngine mappingEngine;
+
+		public UserEnabledAttribute(Type userModel, Type userDetails, IMappingEngine mappingEngine)
 		{
-		    _TypeMapService = typeService;
 		    _UserModel = userModel;
 			_UserDetails = userDetails;
-
-            if (_TypeMapService.TypeMapExists(_UserModel, _UserDetails) == false)
-            {
-                _TypeMapService.CreateMap(userModel, userDetails);
-            }
+			this.mappingEngine = mappingEngine;
 		}
 
 		public override void OnResultExecuting(ResultExecutingContext filterContext)
@@ -62,7 +57,7 @@ namespace MvcHelpers.Attributes
 
         private dynamic GetUserDetails<T>(T user)
         {
-            return _TypeMapService.Map(user, _UserModel, _UserDetails);
+            return mappingEngine.Map(user, _UserModel, _UserDetails);
         }
 	}
 }

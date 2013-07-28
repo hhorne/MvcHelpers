@@ -12,7 +12,7 @@ namespace MvcHelpers.Tests.AttributesTests
 	public class UserEnabledAttributeTests
 	{
         Mock<IMappingExpression> _MappingExpression = new Mock<IMappingExpression>();
-        Mock<ITypeMapService> _TypeService = new Mock<ITypeMapService>();
+        Mock<IMappingEngine> _TypeService = new Mock<IMappingEngine>();
 		Mock<Controller> _BaseController = new Mock<Controller>();
 		Mock<FakeFullyEnabledController<FakeUser>> _FullyEnabledController = new Mock<FakeFullyEnabledController<FakeUser>>();
 		Mock<FakeUserAwareController<FakeUser>> _UserAwareController = new Mock<FakeUserAwareController<FakeUser>>();
@@ -20,9 +20,6 @@ namespace MvcHelpers.Tests.AttributesTests
         [Fact]
         public void Should_Create_Model_Mapping_When_Not_Present()
         {   
-            _TypeService.Setup(t => t.TypeMapExists(It.IsAny<Type>(), It.IsAny<Type>())).Returns(null);
-            _TypeService.Setup(t => t.CreateMap(It.IsAny<Type>(), It.IsAny<Type>())).Returns(_MappingExpression.Object);
-
             Assert.DoesNotThrow(() => new UserEnabledAttribute(typeof(FakeUser), typeof(FakeUserDetails), _TypeService.Object));            
         }
 
