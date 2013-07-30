@@ -7,7 +7,7 @@ namespace MvcHelpers.Services
 {
 	public interface IAppSettingsService
 	{
-		string this[string settingName] { get; set; }
+		string this[string settingName] { get; }
 	}
 
 	public class AppSettingsService : DynamicObject, IAppSettingsService
@@ -15,12 +15,8 @@ namespace MvcHelpers.Services
 		public string this[string settingName]
 		{
 			get
-			{
+			{				
 				return ConfigurationManager.AppSettings[settingName];
-			}
-			set
-			{
-				ConfigurationManager.AppSettings[settingName] = value;
 			}
 		}
 
