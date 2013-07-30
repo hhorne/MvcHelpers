@@ -35,5 +35,11 @@ namespace MvcHelpers.Services
 		{
 			return ConfigurationManager.AppSettings.AllKeys;
 		}
+
+		public object GetSection(string sectionName)
+		{
+			var section = ConfigurationManager.GetSection(sectionName);
+			return section;
+		}
 	}
 }
