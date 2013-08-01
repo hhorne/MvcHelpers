@@ -17,7 +17,7 @@ namespace MvcHelpers.Email
 		private readonly dynamic appSettings;
 		private readonly ILog log;
 
-		public Mailer(IAppSettingsService appSettings)
+		public Mailer(IAppSettingsReader appSettings)
 		{
 			this.log = LogManager.GetLogger(GetType());
 			this.appSettings = appSettings;
