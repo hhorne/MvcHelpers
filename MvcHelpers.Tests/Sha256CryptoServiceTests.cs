@@ -2,7 +2,7 @@
 using MvcHelpers.Services;
 using Xunit;
 
-namespace MvcHelpers.Tests.ServicesTests
+namespace MvcHelpers.Tests
 {
 	public class Sha256CryptoServiceTests
 	{

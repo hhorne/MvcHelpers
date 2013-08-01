@@ -7,7 +7,7 @@ using MvcHelpers.Attributes;
 using MvcHelpers.Tests.Fakes;
 using Xunit;
 
-namespace MvcHelpers.Tests.AttributesTests
+namespace MvcHelpers.Tests
 {
 	public class UserEnabledAttributeTests
 	{
