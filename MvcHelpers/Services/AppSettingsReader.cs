@@ -5,12 +5,14 @@ using System.Linq;
 
 namespace MvcHelpers.Services
 {
-	public interface IAppSettingsService
+	public interface IAppSettingsReader
 	{
 		string this[string settingName] { get; }
+		ConnectionStringSettingsCollection ConnectionStrings { get; }
+		object GetSection(string sectionName);
 	}
 
-	public class AppSettingsService : DynamicObject, IAppSettingsService
+	public class AppSettingsReader : DynamicObject, IAppSettingsReader
 	{
 		public string this[string settingName]
 		{
@@ -18,6 +20,20 @@ namespace MvcHelpers.Services
 			{				
 				return ConfigurationManager.AppSettings[settingName];
 			}
+		}
+
+		public ConnectionStringSettingsCollection ConnectionStrings
+		{
+			get
+			{
+				return ConfigurationManager.ConnectionStrings;
+			}
+		}
+
+		public object GetSection(string sectionName)
+		{
+			var section = ConfigurationManager.GetSection(sectionName);
+			return section;
 		}
 
 		public override bool TryGetMember(GetMemberBinder binder, out object result)
@@ -34,12 +50,6 @@ namespace MvcHelpers.Services
 		public override IEnumerable<string> GetDynamicMemberNames()
 		{
 			return ConfigurationManager.AppSettings.AllKeys;
-		}
-
-		public object GetSection(string sectionName)
-		{
-			var section = ConfigurationManager.GetSection(sectionName);
-			return section;
 		}
 	}
 }
