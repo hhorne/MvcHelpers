@@ -17,9 +17,9 @@ namespace MvcHelpers.Tests
 		{
 			dynamic appSettings = new AppSettingsReader();
 
-			var value = appSettings.SettingExists;
+			var value = (bool)appSettings.SettingExists;
 
-			Assert.Equal("true", value);
+			Assert.True(value);
 		}
 
 
