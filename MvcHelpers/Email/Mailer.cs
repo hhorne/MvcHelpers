@@ -15,26 +15,17 @@ namespace MvcHelpers.Email
 	public class Mailer : IMailer
 	{
 		private readonly dynamic appSettings;
-		private readonly ILog log;
-
+		
 		public Mailer(IAppSettingsReader appSettings)
 		{
-			this.log = LogManager.GetLogger(GetType());
 			this.appSettings = appSettings;
 		}
 
 		public async Task SendEmail(MailMessage message)
 		{
-			try
+			using (var mailClient = CreateMailClient())
 			{
-				using (var mailClient = CreateMailClient())
-				{
-					await mailClient.SendMailAsync(message);
-				}
-			}
-			catch (Exception e)
-			{
-				log.Error("Exception in Mailer.SendEmail", e);
+				await mailClient.SendMailAsync(message);
 			}
 		}
 
