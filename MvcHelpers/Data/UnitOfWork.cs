@@ -17,6 +17,8 @@ namespace MvcHelpers.Data
 		void Add<T>(T entity) where T : class;
 		void Delete<T>(T entity) where T : class;
 		void Edit<T>(T entity) where T : class;
+		bool Any<T>(Expression<Func<T, bool>> predicate) where T : class;
+		T SingleOrDefault<T>(Expression<Func<T, bool>> predicate) where T : class;
 		int SaveChanges();
 	}
 
@@ -59,6 +61,17 @@ namespace MvcHelpers.Data
     	{
     		context.Entry(entity).State = EntityState.Modified;
     	}
+
+		public bool Any<T>(Expression<Func<T, bool>> predicate) where T : class
+		{
+			return context.Set<T>().Any(predicate);
+		}
+
+		public T SingleOrDefault<T>(Expression<Func<T, bool>> predicate) where T : class
+		{
+			var result = context.Set<T>().SingleOrDefault(predicate);
+			return result;
+		}
 
     	public int SaveChanges()
     	{
