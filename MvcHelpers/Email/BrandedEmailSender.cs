@@ -57,7 +57,7 @@ namespace MvcHelpers.Email
 			email.To.Add(recipients);
 			email.From = instructions.From;
 			email.Subject = instructions.Subject;
-			email.BodyEncoding = Encoding.UTF8;
+			email.BodyEncoding = instructions.BodyEncoding;
 			email.IsBodyHtml = true;
 			email.Body = BuildEmailBody(instructions);
 
@@ -75,7 +75,7 @@ namespace MvcHelpers.Email
 
 			var message = templateResolver.ResolveTemplate(messageTemplate, instructions.Parameters);
 
-			// Pull up branded email template and apply the message
+			// Pull up brand template and apply the message
 			var brandTemplatePath = ioService.CombineAndMap(EmailPath, BrandedTemplateFolder, brand + ".cshtml");
 			var brandTemplate = ioService.ReadAllText(brandTemplatePath);
 

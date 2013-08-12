@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Mail;
+using System.Text;
 
 namespace MvcHelpers.Email
 {
@@ -11,7 +13,13 @@ namespace MvcHelpers.Email
 		public string Subject { get; set; }
 		public string MessageTemplate { get; set; }
 		public bool Enabled { get; set; }
+		public Encoding BodyEncoding { get; set; }
 		public dynamic Parameters { get; set; }
+
+		public DeliveryInstructions()
+		{
+			BodyEncoding = Encoding.UTF8;
+		}
 
 		public string GetDelimitedRecipients(string delimiter)
 		{
