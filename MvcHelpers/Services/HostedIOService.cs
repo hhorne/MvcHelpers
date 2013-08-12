@@ -12,7 +12,7 @@ namespace MvcHelpers.Services
 		string CombineAndMap(params string[] paths);
 	}
 
-	public class IOService : IIOService
+	public class HostedIOService : IIOService
 	{
 		public string MapPath(string path)
 		{
