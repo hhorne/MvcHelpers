@@ -2,6 +2,8 @@
 
 This is a collection of code-bits that I think are testable and resusable across MVC projects. It is meant to provide a basic set of functionality and services to a new web project.
 
+[![Build status](https://ci.appveyor.com/api/projects/status/7kdahyddwp6srdiy)](https://ci.appveyor.com/project/hhorne/mvchelpers)
+
 ##Data
 
 ###IUnitOfWork & UnitOfWork&lt;TContext&gt;
