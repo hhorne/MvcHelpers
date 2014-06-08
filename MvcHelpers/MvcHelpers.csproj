@@ -80,9 +80,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\UserEnabledAttribute.cs" />
-    <Compile Include="Controllers\ICachingController.cs" />
-    <Compile Include="Controllers\IUserAwareController.cs" />
     <Compile Include="Data\UnitOfWork.cs" />
     <Compile Include="Email\BrandedEmailSender.cs" />
     <Compile Include="Email\DeliveryInstructions.cs" />
