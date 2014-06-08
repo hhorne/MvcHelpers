@@ -17,7 +17,7 @@ namespace MvcHelpers.Services
 		public string this[string settingName]
 		{
 			get
-			{				
+			{
 				return ConfigurationManager.AppSettings[settingName];
 			}
 		}

@@ -18,9 +18,9 @@ namespace MvcHelpers.Services
 		public Sha256CryptoService()
 		{
 			_HashProvider = new SHA256Managed();
-			_SaltGenerator = new RNGCryptoServiceProvider();            
+			_SaltGenerator = new RNGCryptoServiceProvider();
 		}
-		
+
 		/// <summary>
 		/// Hashes a password
 		/// </summary>
@@ -77,19 +77,19 @@ namespace MvcHelpers.Services
 			return buffer.ToString();
 		}
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 
-	    protected virtual void Dispose(bool disposing)
-	    {
-            if (disposing)
-            {
-                _HashProvider.Dispose();
-                _SaltGenerator.Dispose();
-            }
-	    }
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				_HashProvider.Dispose();
+				_SaltGenerator.Dispose();
+			}
+		}
 	}
 }

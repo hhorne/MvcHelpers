@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace MvcHelpers.Data
 {
@@ -22,7 +20,7 @@ namespace MvcHelpers.Data
 		int SaveChanges();
 	}
 
-    public class UnitOfWork<TContext> : DynamicObject, IUnitOfWork where TContext : DbContext, IDisposable, new()
+	public class UnitOfWork<TContext> : DynamicObject, IUnitOfWork where TContext : DbContext, IDisposable, new()
 	{
 		private TContext context = new TContext();
 
@@ -47,20 +45,20 @@ namespace MvcHelpers.Data
 			return context.Set<T>().Where(predicate).ToArray();
 		}
 
-    	public void Add<T>(T entity) where T : class
-    	{
-    		context.Set<T>().Add(entity);
-    	}
+		public void Add<T>(T entity) where T : class
+		{
+			context.Set<T>().Add(entity);
+		}
 
-    	public void Delete<T>(T entity) where T : class
-    	{
-    		context.Set<T>().Remove(entity);
-    	}
+		public void Delete<T>(T entity) where T : class
+		{
+			context.Set<T>().Remove(entity);
+		}
 
-    	public void Edit<T>(T entity) where T : class
-    	{
-    		context.Entry(entity).State = EntityState.Modified;
-    	}
+		public void Edit<T>(T entity) where T : class
+		{
+			context.Entry(entity).State = EntityState.Modified;
+		}
 
 		public bool Any<T>(Expression<Func<T, bool>> predicate) where T : class
 		{
@@ -73,24 +71,24 @@ namespace MvcHelpers.Data
 			return result;
 		}
 
-    	public int SaveChanges()
-    	{
-    		var result = context.SaveChanges();
-    		return result;
-    	}
+		public int SaveChanges()
+		{
+			var result = context.SaveChanges();
+			return result;
+		}
 
 		public void Dispose()
 		{
 			Dispose(true);
-            GC.SuppressFinalize(this);
+			GC.SuppressFinalize(this);
 		}
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if(disposing)
-            {
-                context.Dispose();
-            }
-        }
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				context.Dispose();
+			}
+		}
 	}
 }

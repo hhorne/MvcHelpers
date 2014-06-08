@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web;
-using System.Web.Security;
+﻿using System.Web.Security;
 
 namespace MvcHelpers.Services
 {
@@ -15,17 +10,17 @@ namespace MvcHelpers.Services
 
 	// Wrapper around static ASP.NET classes making them usable in MVC controllers 
 	// while not making them difficult to test. 
-    public class FormsAuthenticationService : IFormsAuthenticationService
-    {
+	public class FormsAuthenticationService : IFormsAuthenticationService
+	{
 		public void SignIn(string email, bool createCookie)
-        {
+		{
 			FormsAuthentication.SetAuthCookie(email, createCookie);
-			FormsAuthentication.RedirectFromLoginPage(email, createCookie);			
-        }
+			FormsAuthentication.RedirectFromLoginPage(email, createCookie);
+		}
 
-        public void SignOut()
-        {
-            FormsAuthentication.SignOut();
-        }
-    }
+		public void SignOut()
+		{
+			FormsAuthentication.SignOut();
+		}
+	}
 }

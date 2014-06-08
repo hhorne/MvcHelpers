@@ -17,7 +17,7 @@ namespace MvcHelpers.Services
 		{
 			get { return HttpContext.Current.Session; }
 		}
-		
+
 		public T Get<T>(string cacheID, Func<T> getItemCallback) where T : class
 		{
 			T item = Session[cacheID] as T;
@@ -43,7 +43,7 @@ namespace MvcHelpers.Services
 		}
 
 		public void Remove(string cacheID)
-		{						
+		{
 			Session.Remove(cacheID);
 		}
 	}

@@ -31,7 +31,7 @@ namespace MvcHelpers.Services
 
 		public T Get<T>(string cacheID, Func<T> getItemCallback, CacheDependency dependencies, DateTime absoluteExpiration) where T : class
 		{
-			return Get(cacheID, getItemCallback, dependencies, absoluteExpiration, Cache.NoSlidingExpiration);			
+			return Get(cacheID, getItemCallback, dependencies, absoluteExpiration, Cache.NoSlidingExpiration);
 		}
 
 		public T Get<T>(string cacheID, Func<T> getItemCallback, CacheDependency dependencies, DateTime absoluteExpiration, TimeSpan slidingExpiration) where T : class

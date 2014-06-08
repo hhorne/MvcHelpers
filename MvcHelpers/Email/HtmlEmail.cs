@@ -1,11 +1,11 @@
-﻿using System.Linq;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 
 namespace MvcHelpers.Email
 {
 	public class HtmlEmail : MailMessage
 	{
-		public HtmlEmail() : base()
+		public HtmlEmail()
+			: base()
 		{
 			base.IsBodyHtml = true;
 		}

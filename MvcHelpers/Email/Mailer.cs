@@ -1,9 +1,7 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using MvcHelpers.Services;
-using ServiceStack.Logging;
 
 namespace MvcHelpers.Email
 {
@@ -15,7 +13,7 @@ namespace MvcHelpers.Email
 	public class Mailer : IMailer
 	{
 		private readonly dynamic appSettings;
-		
+
 		public Mailer(IAppSettingsReader appSettings)
 		{
 			this.appSettings = appSettings;
