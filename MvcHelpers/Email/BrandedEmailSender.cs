@@ -1,10 +1,6 @@
-﻿using System;
-using System.Net.Mail;
-using System.Text;
+﻿using System.Net.Mail;
 using System.Threading.Tasks;
-using MvcHelpers.Email;
 using MvcHelpers.Services;
-using log4net;
 
 namespace MvcHelpers.Email
 {
@@ -51,35 +47,26 @@ namespace MvcHelpers.Email
 
 		private MailMessage BuildEmailMessage(DeliveryInstructions instructions)
 		{
-			var recipients = instructions.GetDelimitedRecipients(", ");
-			var email = new MailMessage();
-
-			email.To.Add(recipients);
-			email.From = instructions.From;
-			email.Subject = instructions.Subject;
-			email.BodyEncoding = instructions.BodyEncoding;
-			email.IsBodyHtml = true;
-			email.Body = BuildEmailBody(instructions);
-
+			var emailBody = BuildEmailBody(instructions);
+			var email = new HtmlEmail(instructions, emailBody);
 			return email;
 		}
 
 		private string BuildEmailBody(DeliveryInstructions instructions)
 		{
 			var brand = instructions.Brand;
-			var messageTemplateName = instructions.MessageTemplate;
+			var messageName = instructions.MessageTemplate;
 
 			// Pull up message template and apply the data
-			var messagePath = ioService.CombineAndMap(EmailPath, BrandedMessageFolder, brand, messageTemplateName);
+			var messagePath = ioService.CombineAndMap(EmailPath, BrandedMessageFolder, brand, messageName);
 			var messageTemplate = ioService.ReadAllText(messagePath);
-
 			var message = templateResolver.ResolveTemplate(messageTemplate, instructions.Parameters);
 
 			// Pull up brand template and apply the message
 			var brandTemplatePath = ioService.CombineAndMap(EmailPath, BrandedTemplateFolder, brand + ".cshtml");
 			var brandTemplate = ioService.ReadAllText(brandTemplatePath);
-
 			var body = templateResolver.ResolveTemplate(brandTemplate, new { Body = message });
+
 			return body;
 		}
 	}
